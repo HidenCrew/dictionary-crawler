@@ -1,20 +1,23 @@
+from Log import log
+
 import requests
 from bs4 import BeautifulSoup
 import re
 
 
+# todo: word and definition should be a data structure, and we should not put the parsing code in there constructor => createWordFrom...?
 class Definition:
     def __init__(self, meaning):
         self.meaning = meaning.text
-        print('meaning: ' + self.meaning)
+        log('meaning: ' + self.meaning)
         # chinese
         self.chinese = meaning.next_sibling.find('span', {'lang': 'zh-Hant'}).text
-        print('chinese: ' + self.chinese)
+        log('chinese: ' + self.chinese)
         # examples
         self.examples = []
         for example in meaning.next_sibling.find_all('div', {'class': 'examp'}):
             self.examples.append(re.sub('\n$', '', example.text))
-        print(self.examples)
+        log(self.examples)
 
     def __str__(self):
         return "{}\n{}\n{}".format(self.meaning, self.chinese, self.examples)
@@ -30,16 +33,16 @@ class Word:
 
         # get the title
         title = soup.find('title').text
-        print('raw title: ' + title)
+        log('raw title: ' + title)
         self.title = re.sub(' \|.*', '', title)
-        print('clean title: ' + self.title)
+        log('clean title: ' + self.title)
 
         # get the pronunciation
         self.pronunciations = []
         for pron in soup.find_all('span', {'class': 'pron'}):
-            print('pron: ' + pron.text)
+            log('pron: ' + pron.text)
             self.pronunciations.append(pron.text)
-        print(self.pronunciations)
+        log(self.pronunciations)
 
         # get the meaning
         self.definitions = []
@@ -47,14 +50,8 @@ class Word:
             self.definitions.append(Definition(meaning))
 
     def __str__(self):
-        return "{}\n{}\n{}".format(self.title, self.pronunciations, self.definitions)
-
-
-# put in words
-rawWords = ['test']
-print(rawWords)
-
-# Processing
-for rawWord in rawWords:
-    word = Word(rawWord)
-    print(word)
+        res = "{}\n{}".format(self.title, self.pronunciations)
+        for definition in self.definitions:
+            res += "\n"
+            res += str(definition)
+        return res
