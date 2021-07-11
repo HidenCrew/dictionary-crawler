@@ -3,7 +3,8 @@ import codecs
 from enum import Enum
 from typing import List
 
-from Log import log
+from Utils import log
+from Utils import getTimeStr
 from Word import Word
 
 
@@ -24,19 +25,23 @@ class DocxExporter(IWordExporter):
 
 
 class Anki4000EEWExporter(IWordExporter):
+    separator = ","
+
     def export(self, words):
-        with codecs.open("anki_words.txt", "w", "utf-8") as f:
+        with codecs.open("anki-{}.txt".format(getTimeStr()), "w", "utf-8") as f:
             for word in words:
-                f.write(word.title + ",")
+                f.write(word.title + Anki4000EEWExporter.separator)
                 # this is an empty image
-                f.write("\"\"" + ",")
-                # todo: download sound
+                f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound
-                f.write("\"\"" + ",")
+                if word.soundFileName:
+                    f.write("\"[sound:{}]\"".format(word.soundFileName) + Anki4000EEWExporter.separator)
+                else:
+                    f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound meaning
-                f.write("\"\"" + ",")
+                f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty example sound
-                f.write("\"\"" + ",")
+                f.write("\"\"" + Anki4000EEWExporter.separator)
                 # meaning
                 f.write("\"")
                 examples = []
@@ -45,15 +50,15 @@ class Anki4000EEWExporter(IWordExporter):
                     f.write(u"{}\n".format(definition.chinese))
                     for example in definition.examples:
                         examples.append(example)
-                f.write("\"" + ",")
+                f.write("\"" + Anki4000EEWExporter.separator)
                 # example
                 f.write("\"")
                 for example in examples:
                     f.write(u"{}\n".format(example))
-                f.write("\"" + ",")
+                f.write("\"" + Anki4000EEWExporter.separator)
                 # pronounce
                 f.write("\"")
-                for pron in word.pronunciations:
+                for pron in word.ipas:
                     f.write("{} ".format(pron))
                 f.write("\"")
                 # word end
