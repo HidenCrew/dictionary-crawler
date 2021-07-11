@@ -1,5 +1,4 @@
-from Utils import log
-from Utils import getTimeStr
+import Utils
 
 import requests
 from bs4 import BeautifulSoup
@@ -11,15 +10,15 @@ import re
 class Definition:
     def __init__(self, meaning):
         self.meaning = meaning.text
-        log('meaning: ' + self.meaning)
+        Utils.log('meaning: ' + self.meaning)
         # chinese
         self.chinese = meaning.next_sibling.find('span', {'lang': 'zh-Hant'}).text
-        log('chinese: ' + self.chinese)
+        Utils.log('chinese: ' + self.chinese)
         # examples
         self.examples = []
         for example in meaning.next_sibling.find_all('div', {'class': 'examp'}):
             self.examples.append(re.sub('\n$', '', example.text))
-        log(self.examples)
+        Utils.log(self.examples)
 
     def __str__(self):
         return "{}\n{}\n{}".format(self.meaning, self.chinese, self.examples)
@@ -35,7 +34,7 @@ class Word:
 
             # get the title
             self.title = soup.find("meta", property="og:title")["content"]
-            log('title: ' + self.title)
+            Utils.log('title: ' + self.title)
 
             if not self.isWordFound(soup):
                 raise Exception
@@ -43,15 +42,15 @@ class Word:
             # get the IPA
             self.ipas = []
             for pron in soup.find_all('span', {'class': 'pron'}):
-                log('pron: ' + pron.text)
+                Utils.log('pron: ' + pron.text)
                 self.ipas.append(pron.text)
-            log(self.ipas)
+            Utils.log(self.ipas)
 
             # get the sound
             self.soundFileName = ""
             audioUrl = self.getAudioUrl(soup)
             if audioUrl:
-                self.soundFileName = "{}-{}.mp3".format(self.title, getTimeStr())
+                self.soundFileName = "{}-{}.mp3".format(self.title, Utils.getTimeStr())
                 self.downloadAudioFile(audioUrl)
 
             # get the meaning
@@ -65,16 +64,16 @@ class Word:
 
     def getAudioUrl(self, soup: BeautifulSoup) -> str:
         for src in soup.find_all('source'):
-            if bool(re.search('\".*mp3\"', str(src))):
+            if bool(re.search('\.mp3', str(src))):
                 result = src.attrs['src']
-                log("Found audio source: " + result)
+                Utils.log("Found audio source: " + result)
                 return result
         return ""
 
     def downloadAudioFile(self, url: str):
         audioUrl = "https://dictionary.cambridge.org/zht" + url
         with requests.get(audioUrl, headers={'user-agent': Word.userAgent}) as request:
-            with open(self.soundFileName, "wb") as file:
+            with open(Utils.getOutputBase() + self.soundFileName, "wb") as file:
                 file.write(request.content)
 
     def __str__(self):

@@ -3,7 +3,7 @@ from WordExporter import export, IWordExporter
 from Utils import log
 
 # put in words
-rawWords = ['fade', 'as', 'fdafdsafdsa']
+rawWords = ['nugget','sesame','vegans','roe','meme']
 log(rawWords)
 
 # Processing
@@ -11,7 +11,7 @@ words = []
 for rawWord in rawWords:
     try:
         word = Word(rawWord)
-        print(word)
+        log(word)
         words.append(word)
     except:
         print(rawWord + " not found")

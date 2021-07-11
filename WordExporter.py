@@ -1,11 +1,10 @@
+import Utils
+from Word import Word
+
 from abc import ABCMeta, abstractmethod
 import codecs
 from enum import Enum
 from typing import List
-
-from Utils import log
-from Utils import getTimeStr
-from Word import Word
 
 
 class IWordExporter:
@@ -24,12 +23,11 @@ class DocxExporter(IWordExporter):
         print("not implemented")
 
 
-# todo: open file to output directory, and the audio file too
 class Anki4000EEWExporter(IWordExporter):
     separator = ","
 
     def export(self, words):
-        with codecs.open("anki-{}.txt".format(getTimeStr()), "w", "utf-8") as f:
+        with codecs.open("{}anki-{}.txt".format(Utils.getOutputBase(), Utils.getTimeStr()), "w", "utf-8") as f:
             for word in words:
                 f.write(word.title + Anki4000EEWExporter.separator)
                 # this is an empty image
