@@ -3,17 +3,19 @@ from WordExporter import export, IWordExporter
 from Utils import log
 
 # put in words
-rawWords = ['run-up']
+rawWords = ['fade', 'as', 'fdafdsafdsa']
 log(rawWords)
 
 # Processing
 words = []
 for rawWord in rawWords:
-    word = Word(rawWord)
-    print(word)
-    words.append(word)
+    try:
+        word = Word(rawWord)
+        print(word)
+        words.append(word)
+    except:
+        print(rawWord + " not found")
 
 
 # todo: add unit test
-# todo: fail case handle: 404 not found...? to English version to check again first
 export(words, IWordExporter.Format.anki)

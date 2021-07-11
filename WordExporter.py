@@ -24,6 +24,7 @@ class DocxExporter(IWordExporter):
         print("not implemented")
 
 
+# todo: open file to output directory, and the audio file too
 class Anki4000EEWExporter(IWordExporter):
     separator = ","
 

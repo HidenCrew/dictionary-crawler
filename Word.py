@@ -7,7 +7,7 @@ import re
 
 
 # todo: word and definition should be a data structure, and we should not put the parsing code in there constructor
-#  => createWordFrom...?
+#  => createWordFrom...? or WordFactory, CambridgeCrawlerWordFactory
 class Definition:
     def __init__(self, meaning):
         self.meaning = meaning.text
@@ -30,34 +30,38 @@ class Word:
     userAgent = "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0"
 
     def __init__(self, word):
-        # Make the request to a url
-        r = requests.get(Word.dictionaryUrl + word, headers={'user-agent': Word.userAgent})
-        soup = BeautifulSoup(r.content)
+        with requests.get(Word.dictionaryUrl + word, headers={'user-agent': Word.userAgent}, allow_redirects=True) as request:
+            soup = BeautifulSoup(request.content)
 
-        # get the title
-        title = soup.find('title').text
-        log('raw title: ' + title)
-        self.title = re.sub(' \|.*', '', title)
-        log('clean title: ' + self.title)
+            # get the title
+            self.title = soup.find("meta", property="og:title")["content"]
+            log('title: ' + self.title)
 
-        # get the IPA
-        self.ipas = []
-        for pron in soup.find_all('span', {'class': 'pron'}):
-            log('pron: ' + pron.text)
-            self.ipas.append(pron.text)
-        log(self.ipas)
+            if not self.isWordFound(soup):
+                raise Exception
 
-        # get the sound
-        self.soundFileName = ""
-        audioUrl = self.getAudioUrl(soup)
-        if audioUrl:
-            self.soundFileName = "{}-{}.mp3".format(self.title, getTimeStr())
-            self.downloadAudioFile(audioUrl)
+            # get the IPA
+            self.ipas = []
+            for pron in soup.find_all('span', {'class': 'pron'}):
+                log('pron: ' + pron.text)
+                self.ipas.append(pron.text)
+            log(self.ipas)
 
-        # get the meaning
-        self.definitions = []
-        for meaning in soup.find_all('div', {'class': 'ddef_h'}):
-            self.definitions.append(Definition(meaning))
+            # get the sound
+            self.soundFileName = ""
+            audioUrl = self.getAudioUrl(soup)
+            if audioUrl:
+                self.soundFileName = "{}-{}.mp3".format(self.title, getTimeStr())
+                self.downloadAudioFile(audioUrl)
+
+            # get the meaning
+            self.definitions = []
+            for meaning in soup.find_all('div', {'class': 'ddef_h'}):
+                self.definitions.append(Definition(meaning))
+
+    def isWordFound(self, soup: BeautifulSoup) -> bool:
+        url = soup.find("meta", property="og:url")["content"]
+        return bool(re.search("{}$".format(self.title), str(url)))
 
     def getAudioUrl(self, soup: BeautifulSoup) -> str:
         for src in soup.find_all('source'):
