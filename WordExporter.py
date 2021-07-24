@@ -41,6 +41,7 @@ class Anki4000EEWExporter(IWordExporter):
                 f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty example sound
                 f.write("\"\"" + Anki4000EEWExporter.separator)
+                # todo: replace " with \"
                 # meaning
                 f.write("\"")
                 examples = []

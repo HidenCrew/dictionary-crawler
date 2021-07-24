@@ -3,7 +3,7 @@ from WordExporter import export, IWordExporter
 from Utils import log
 
 # put in words
-rawWords = ['nugget','sesame','vegans','roe','meme']
+rawWords = ['Compound interest']
 log(rawWords)
 
 # Processing
@@ -14,7 +14,7 @@ for rawWord in rawWords:
         log(word)
         words.append(word)
     except:
-        print(rawWord + " not found")
+        print("\"{}\" not found".format(rawWord))
 
 
 # todo: add unit test

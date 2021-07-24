@@ -60,7 +60,8 @@ class Word:
 
     def isWordFound(self, soup: BeautifulSoup) -> bool:
         url = soup.find("meta", property="og:url")["content"]
-        return bool(re.search("{}$".format(self.title), str(url)))
+        notFound = bool(re.search("{}$".format("spellcheck"), str(url)))
+        return not notFound
 
     def getAudioUrl(self, soup: BeautifulSoup) -> str:
         for src in soup.find_all('source'):
