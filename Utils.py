@@ -8,9 +8,9 @@ def log(str):
         print(str)
 
 
-def getTimeStr() -> str:
+def get_time_str() -> str:
     return time.strftime("%Y%m%d-%H%M%S")
 
 
-def getOutputBase() -> str:
+def get_output_base() -> str:
     return "output/"

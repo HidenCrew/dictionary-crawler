@@ -27,14 +27,14 @@ class Anki4000EEWExporter(IWordExporter):
     separator = ","
 
     def export(self, words):
-        with codecs.open("{}anki-{}.txt".format(Utils.getOutputBase(), Utils.getTimeStr()), "w", "utf-8") as f:
+        with codecs.open("{}anki-{}.txt".format(Utils.get_output_base(), Utils.get_time_str()), "w", "utf-8") as f:
             for word in words:
                 f.write(word.title + Anki4000EEWExporter.separator)
                 # this is an empty image
                 f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound
-                if word.soundFileName:
-                    f.write("\"[sound:{}]\"".format(word.soundFileName) + Anki4000EEWExporter.separator)
+                if word.sound_file_name:
+                    f.write("\"[sound:{}]\"".format(word.sound_file_name) + Anki4000EEWExporter.separator)
                 else:
                     f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound meaning
@@ -65,15 +65,15 @@ class Anki4000EEWExporter(IWordExporter):
                 f.write("\n")
 
 
-def getExporter(exportFormat: IWordExporter.Format) -> IWordExporter:
-    if exportFormat == IWordExporter.Format.docx:
+def get_exporter(export_format: IWordExporter.Format) -> IWordExporter:
+    if export_format == IWordExporter.Format.docx:
         return DocxExporter()
-    elif exportFormat == IWordExporter.Format.anki:
+    elif export_format == IWordExporter.Format.anki:
         return Anki4000EEWExporter()
     else:
-        raise Exception("Format error, input format: {}".format(exportFormat))
+        raise Exception("Format error, input format: {}".format(export_format))
 
 
-def export(words: List[Word], exportFormat: IWordExporter.Format):
-    exporter = getExporter(exportFormat)
+def export(words: List[Word], export_format: IWordExporter.Format):
+    exporter = get_exporter(export_format)
     exporter.export(words)

@@ -3,18 +3,18 @@ from WordExporter import export, IWordExporter
 from Utils import log
 
 # put in words
-rawWords = ['Compound interest']
-log(rawWords)
+raw_words = ['australia']
+log(raw_words)
 
 # Processing
 words = []
-for rawWord in rawWords:
+for raw_word in raw_words:
     try:
-        word = Word(rawWord)
+        word = Word(raw_word)
         log(word)
         words.append(word)
     except:
-        print("\"{}\" not found".format(rawWord))
+        print("\"{}\" not found".format(raw_word))
 
 
 # todo: add unit test
