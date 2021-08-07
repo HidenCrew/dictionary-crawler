@@ -3,9 +3,9 @@ import time
 DEBUG = False
 
 
-def log(str):
+def log(string):
     if DEBUG:
-        print(str)
+        print(string)
 
 
 def get_time_str() -> str:
