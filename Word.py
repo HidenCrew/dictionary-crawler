@@ -5,9 +5,6 @@ from bs4 import BeautifulSoup
 import re
 
 
-# todo: f-string
-
-
 # todo: word and definition should be a data structure, and we should not put the parsing code in there constructor
 #  => createWordFrom...? or WordFactory, CambridgeCrawlerWordFactory
 class Definition:
@@ -24,7 +21,7 @@ class Definition:
         Utils.log(self.examples)
 
     def __str__(self):
-        return "{}\n{}\n{}".format(self.meaning, self.chinese, self.examples)
+        return f"{self.meaning}\n{self.chinese}\n{self.examples}"
 
 
 class Word:
@@ -53,7 +50,7 @@ class Word:
             self.sound_file_name = ""
             audio_url = self.get_audio_url(soup)
             if audio_url:
-                self.sound_file_name = "{}-{}.mp3".format(self.title, Utils.get_time_str())
+                self.sound_file_name = f"{self.title}-{Utils.get_time_str()}.mp3"
                 self.download_audio_file(audio_url)
 
             # get the meaning
@@ -63,7 +60,7 @@ class Word:
 
     def is_word_found(self, soup: BeautifulSoup) -> bool:
         url = soup.find("meta", property="og:url")["content"]
-        not_found = bool(re.search("{}$".format("spellcheck"), str(url)))
+        not_found = bool(re.search("spellcheck$", str(url)))
         return not not_found
 
     def get_audio_url(self, soup: BeautifulSoup) -> str:
@@ -81,7 +78,7 @@ class Word:
                 file.write(request.content)
 
     def __str__(self):
-        res = "{}\n{}".format(self.title, self.ipas)
+        res = f"{self.title}\n{self.ipas}"
         for definition in self.definitions:
             res += "\n"
             res += str(definition)

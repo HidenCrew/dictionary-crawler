@@ -27,14 +27,14 @@ class Anki4000EEWExporter(IWordExporter):
     separator = ","
 
     def export(self, words):
-        with codecs.open("{}anki-{}.txt".format(Utils.get_output_base(), Utils.get_time_str()), "w", "utf-8") as f:
+        with codecs.open(f"{Utils.get_output_base()}anki-{Utils.get_time_str()}.txt", "w", "utf-8") as f:
             for word in words:
                 f.write(word.title + Anki4000EEWExporter.separator)
                 # this is an empty image
                 f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound
                 if word.sound_file_name:
-                    f.write("\"[sound:{}]\"".format(word.sound_file_name) + Anki4000EEWExporter.separator)
+                    f.write(f"\"[sound:{word.sound_file_name}]\"" + Anki4000EEWExporter.separator)
                 else:
                     f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound meaning
@@ -46,20 +46,20 @@ class Anki4000EEWExporter(IWordExporter):
                 f.write("\"")
                 examples = []
                 for definition in word.definitions:
-                    f.write("{}\n".format(definition.meaning))
-                    f.write(u"{}\n".format(definition.chinese))
+                    f.write(f"{definition.meaning}\n")
+                    f.write(f"{definition.chinese}\n")
                     for example in definition.examples:
                         examples.append(example)
                 f.write("\"" + Anki4000EEWExporter.separator)
                 # example
                 f.write("\"")
                 for example in examples:
-                    f.write(u"{}\n".format(example))
+                    f.write(f'{example}\n')
                 f.write("\"" + Anki4000EEWExporter.separator)
                 # pronounce
                 f.write("\"")
                 for pron in word.ipas:
-                    f.write("{} ".format(pron))
+                    f.write(f"{pron} ")
                 f.write("\"")
                 # word end
                 f.write("\n")
@@ -71,7 +71,7 @@ def get_exporter(export_format: IWordExporter.Format) -> IWordExporter:
     elif export_format == IWordExporter.Format.anki:
         return Anki4000EEWExporter()
     else:
-        raise Exception("Format error, input format: {}".format(export_format))
+        raise Exception(f"Format error, input format: {export_format}")
 
 
 def export(words: List[Word], export_format: IWordExporter.Format):
