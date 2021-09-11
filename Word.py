@@ -30,7 +30,7 @@ class Word:
 
     def __init__(self, word):
         with requests.get(Word.dictionary_url + word, headers={'user-agent': Word.user_agent}, allow_redirects=True) as request:
-            soup = BeautifulSoup(request.content)
+            soup = BeautifulSoup(request.content, features="html.parser")
 
             # get the title
             self.title = soup.find("meta", property="og:title")["content"]

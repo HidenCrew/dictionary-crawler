@@ -3,7 +3,7 @@ from WordExporter import export, IWordExporter
 from Utils import log
 
 # put in words
-raw_words = ['appliance', 'divisive', 'conglomerate']
+raw_words = ['monologue']
 log(raw_words)
 
 # Processing
