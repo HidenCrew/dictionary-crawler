@@ -14,3 +14,7 @@ def get_time_str() -> str:
 
 def get_output_base() -> str:
     return "output/"
+
+
+def read_clean_words() -> list:
+    return [line for line in open("input_words.txt").read().splitlines() if line.strip()]

@@ -1,9 +1,9 @@
 from Word import Word
 from WordExporter import export, IWordExporter
 from Utils import log
+from Utils import read_clean_words
 
-# put in words
-raw_words = ['monologue']
+raw_words = read_clean_words()
 log(raw_words)
 
 # Processing
