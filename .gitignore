@@ -6,4 +6,4 @@
 /.idea/assetWizardSettings.xml
 /.idea/vcs.xml
 /output/**
-/__pycache__
+**/__pycache__
