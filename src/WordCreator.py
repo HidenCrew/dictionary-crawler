@@ -1,6 +1,7 @@
 import Utils
 from Word import Definition
 from Word import Word
+from WordNotFoundException import WordNotFoundException
 
 from abc import ABCMeta, abstractmethod
 from bs4 import BeautifulSoup
@@ -30,7 +31,7 @@ class CambridgeCrawlerWordCreator(IWordCreator):
             Utils.log('title: ' + result.title())
 
             if not self.__is_word_found(soup):
-                raise Exception
+                raise WordNotFoundException(word, self.dictionary_url)
 
             # get the IPA
             ipas = []
@@ -54,10 +55,10 @@ class CambridgeCrawlerWordCreator(IWordCreator):
 
             return result
 
-    @staticmethod
-    def __is_word_found(soup: BeautifulSoup) -> bool:
+    @classmethod
+    def __is_word_found(cls, soup: BeautifulSoup) -> bool:
         url = soup.find("meta", property="og:url")["content"]
-        not_found = bool(re.search("spellcheck$", str(url)))
+        not_found = bool(re.search("spellcheck$", str(url))) | (url.casefold() == cls.dictionary_url.casefold())
         return not not_found
 
     @staticmethod

@@ -41,13 +41,14 @@ class Anki4000EEWExporter(IWordExporter):
                 f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty example sound
                 f.write("\"\"" + Anki4000EEWExporter.separator)
-                # todo: replace " with \", in case some example include "
+                # todo: replace " with \", in case some meaning or example include "
+                #  LATER: maybe we don't need to do that if we export with Anki connect?
                 # meaning
                 f.write("\"")
                 examples = []
                 for definition in word.definitions():
-                    f.write(f"{definition.meaning}\n")
-                    f.write(f"{definition.chinese}\n")
+                    f.write(f"{definition.meaning()}\n")
+                    f.write(f"{definition.chinese()}\n")
                     for example in definition.examples():
                         examples.append(example)
                 f.write("\"" + Anki4000EEWExporter.separator)
