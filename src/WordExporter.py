@@ -19,36 +19,37 @@ class IWordExporter:
 
 
 class DocxExporter(IWordExporter):
-    def export(self, words):
+    def export(self, words: List[Word]):
         print("not implemented")
 
 
 class Anki4000EEWExporter(IWordExporter):
     separator = ","
 
-    def export(self, words):
+    def export(self, words: List[Word]):
         with codecs.open(f"{Utils.get_output_base()}anki-{Utils.get_time_str()}.txt", "w", "utf-8") as f:
             for word in words:
-                f.write(word.title + Anki4000EEWExporter.separator)
+                f.write(word.title() + Anki4000EEWExporter.separator)
                 # this is an empty image
                 f.write("\"\"" + Anki4000EEWExporter.separator)
-                # this is an empty sound
-                if word.sound_file_name:
-                    f.write(f"\"[sound:{word.sound_file_name}]\"" + Anki4000EEWExporter.separator)
+
+                if word.sound_file_name():
+                    f.write(f"\"[sound:{word.sound_file_name()}]\"" + Anki4000EEWExporter.separator)
                 else:
                     f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty sound meaning
                 f.write("\"\"" + Anki4000EEWExporter.separator)
                 # this is an empty example sound
                 f.write("\"\"" + Anki4000EEWExporter.separator)
-                # todo: replace " with \", in case some example include "
+                # todo: replace " with \", in case some meaning or example include "
+                #  LATER: maybe we don't need to do that if we export with Anki connect?
                 # meaning
                 f.write("\"")
                 examples = []
-                for definition in word.definitions:
-                    f.write(f"{definition.meaning}\n")
-                    f.write(f"{definition.chinese}\n")
-                    for example in definition.examples:
+                for definition in word.definitions():
+                    f.write(f"{definition.meaning()}\n")
+                    f.write(f"{definition.chinese()}\n")
+                    for example in definition.examples():
                         examples.append(example)
                 f.write("\"" + Anki4000EEWExporter.separator)
                 # example
@@ -58,7 +59,7 @@ class Anki4000EEWExporter(IWordExporter):
                 f.write("\"" + Anki4000EEWExporter.separator)
                 # pronounce
                 f.write("\"")
-                for pron in word.ipas:
+                for pron in word.ipas():
                     f.write(f"{pron} ")
                 f.write("\"")
                 # word end
