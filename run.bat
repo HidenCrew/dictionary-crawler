@@ -1,6 +1,6 @@
 @echo off
 SETLOCAL
-SET PROJECT_ROOT=%~dp0..
+SET PROJECT_ROOT=%~dp0
 
 echo Activate virtual environment
 echo:
